@@ -6,6 +6,10 @@ from asteroidfield import *
 
 def main():
     pygame.init()
+    pygame.font.init()
+    GAME_FONT = pygame.freetype.Font("./DepartureMono-Regular.otf", 22)
+
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
@@ -39,14 +43,17 @@ def main():
         for a in asteroids:
             for s in shots:
                 if a.collision(s) == False:
+                    player.update_score(1)
                     a.split()
 
         screen.fill("black")
+        GAME_FONT.render_to(screen, (40, 30), f"Score: {player.score}", ("white"))
+
 
         for d in drawable:  
             d.draw(screen)
         pygame.display.flip()
-        dt = clock.tick(60) / 1000
+        dt = clock.tick(144) / 1000
 
 
 if __name__ == "__main__":
