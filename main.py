@@ -2,12 +2,19 @@ import pygame
 import sys
 from constants import *
 from player import *
+import time
 from asteroidfield import *
 
 def main():
     pygame.init()
     pygame.font.init()
+
     GAME_FONT = pygame.freetype.Font("./DepartureMono-Regular.otf", 22)
+
+    margin = 40  
+    top_offset = 30  
+    score_pos = (margin, top_offset)
+    lives_pos = (SCREEN_WIDTH - margin - 100, top_offset)
 
     
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -33,13 +40,15 @@ def main():
                 return
 
         updatable.update(dt)
-        
 
         for a in asteroids:
             if a.collision(player) == False:
-                print("Game Over!")
-                sys.exit()
-            
+                player.update_lives()
+                a.kill()
+                if player.lives == 0:
+                    print("Game Over!")
+                    sys.exit()
+                
         for a in asteroids:
             for s in shots:
                 if a.collision(s) == False:
@@ -47,8 +56,8 @@ def main():
                     a.split()
 
         screen.fill("black")
-        GAME_FONT.render_to(screen, (40, 30), f"Score: {player.score}", ("white"))
-
+        GAME_FONT.render_to(screen, score_pos, f"Score: {player.score}", ("white"))
+        GAME_FONT.render_to(screen, lives_pos, f"Lives: {player.lives}", ("white"))
 
         for d in drawable:  
             d.draw(screen)
